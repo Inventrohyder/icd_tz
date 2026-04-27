@@ -1,0 +1,77 @@
+name: icd-tz-devcontainer
+
+services:
+  mariadb:
+    image: docker.io/mariadb:11.8
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    environment:
+      MYSQL_ROOT_PASSWORD: "123"
+      MYSQL_ROOT_HOST: "%"
+      MARIADB_ROOT_PASSWORD: "123"
+      MARIADB_ROOT_HOST: "%"
+      MARIADB_AUTO_UPGRADE: "1"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -p\"$${MARIADB_ROOT_PASSWORD}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  redis-cache:
+    image: docker.io/redis:8-alpine
+
+  redis-queue:
+    image: docker.io/redis:8-alpine
+
+  frappe:
+    image: docker.io/frappe/bench:latest
+    command: sleep infinity
+    environment:
+      SHELL: /bin/bash
+      SITE: icdtz.localhost
+      ADMIN_PASSWORD: admin
+      FRAPPE_BRANCH: version-16
+      ERPNEXT_BRANCH: version-16
+      BENCH_ROOT: /workspace/development
+      BENCH_NAME: frappe-bench
+      APP_SRC: /workspace/icd_tz
+      PYTHON_BIN: python3.14
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_ROOT_USER: root
+      DB_ROOT_PASSWORD: "123"
+      REDIS_CACHE_URL: redis://redis-cache:6379
+      REDIS_QUEUE_URL: redis://redis-queue:6379
+      REDIS_SOCKETIO_URL: redis://redis-queue:6379
+      PIP_DEFAULT_TIMEOUT: "120"
+      UV_CACHE_DIR: /home/frappe/.cache/uv
+      UV_HTTP_TIMEOUT: "120"
+      UV_LINK_MODE: copy
+    volumes:
+      # Keep only source code bind-mounted; generated Bench state belongs in Docker volumes.
+      - ..:/workspace/icd_tz:cached
+      - bench-data:/workspace/development
+      - uv-cache:/home/frappe/.cache/uv
+    working_dir: /workspace/icd_tz
+    ports:
+      - "8000-8005:8000-8005"
+      - "9000-9005:9000-9005"
+      - "6787:6787"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis-cache:
+        condition: service_started
+      redis-queue:
+        condition: service_started
+
+volumes:
+  # Persistent devcontainer state. Reset with:
+  # docker compose -f .devcontainer/docker-compose.yml down --volumes --remove-orphans
+  bench-data:
+  mariadb-data:
+  uv-cache:
