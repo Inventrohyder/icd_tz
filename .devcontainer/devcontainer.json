@@ -1,0 +1,38 @@
+{
+  "name": "ICD-TZ Frappe Bench",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "frappe",
+  "workspaceFolder": "/workspace/icd_tz",
+  "remoteUser": "frappe",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8000, 9000, 6787],
+  "postCreateCommand": "bash .devcontainer/setup-icd-tz.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-mysql",
+        "visualstudioexptteam.vscodeintellicode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "sqltools.connections": [
+          {
+            "name": "ICD-TZ MariaDB",
+            "driver": "MariaDB",
+            "server": "mariadb",
+            "port": 3306,
+            "database": "mysql",
+            "username": "root",
+            "password": "123",
+            "mysqlOptions": {
+              "authProtocol": "default",
+              "enableSsl": "Disabled"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
