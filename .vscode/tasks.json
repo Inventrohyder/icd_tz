@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ICD-TZ: Setup Bench (Dev Container)",
+      "type": "shell",
+      "command": "make bench-setup",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "ICD-TZ: Start Bench (Dev Container)",
+      "type": "shell",
+      "command": "make bench-start",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "ICD-TZ: Stop Bench (Dev Container)",
+      "type": "shell",
+      "command": "make bench-stop",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
