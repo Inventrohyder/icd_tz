@@ -77,6 +77,13 @@ ICD TZ comes pre-packaged with a suite of critical operational and financial rep
 
 ## Installation
 
+For a full Frappe/ERPNext v16 local development setup, use [SETUP.md](./SETUP.md). The recommended shared workflow is the checked-in Dev Container:
+
+```bash
+make dev-up
+make dev-start
+```
+
 Ensure you have a configured [Frappe Bench](https://frappeframework.com) environment running.
 
 ```bash
